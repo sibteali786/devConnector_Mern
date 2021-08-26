@@ -91,13 +91,16 @@ router.post(
         profile = await Profile.findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
-          { new: true }
+          { new: true } // used to return updated object
         );
 
         return res.json(profile);
       }
 
       // Create if there is no profile
+      profile = new Profile(profileFields); // create new instance
+      await profile.save(); // save it to data base
+      res.json(profile);
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Server Error");
