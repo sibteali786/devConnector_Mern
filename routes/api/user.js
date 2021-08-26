@@ -28,7 +28,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body; // destucturing to use values easily
+    const { name, email, password } = req.body; // destructuring to use values easily
     try {
       // Checking if user Exists
       let user = await User.findOne({ email });
