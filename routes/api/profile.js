@@ -212,4 +212,63 @@ router.put(
     }
   }
 );
+
+// @route   PUT api/profile/experience/:experience_id
+// @desc    Update Profile experience
+// @access  Private
+
+router.post(
+  "/experience/:experience_id",
+  [
+    auth,
+    [
+      check("title", "Title is Required").not().isEmpty(),
+      check("company", "Company is Required").not().isEmpty(),
+      check("from", "From Date is Required").not().isEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    const experience_id = req.params.experience_id;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      let profile = await Profile.findOne({
+        user: req.user.id,
+      });
+      if (experience_id) {
+        profile = await Profile.findOneAndUpdate(
+          {
+            $and: [
+              { user: req.user.id },
+              { experience: { $elemMatch: { _id: req.params.experience_id } } },
+            ],
+          },
+          {
+            $set: {
+              "experience.$.current": req.body.current,
+              "experience.$.title": req.body.title,
+              "experience.$.company": req.body.company,
+              "experience.$.location": req.body.location,
+              "experience.$.from": req.body.from,
+              "experience.$.to": req.body.to,
+              "experience.$.description": req.body.description,
+            },
+          },
+          { new: true } // used to return updated object
+        );
+        return res.json(profile);
+      }
+      return res.status(400).json({ msg: "Profile Experience Not Found" });
+    } catch (error) {
+      console.error(error.message);
+      if (error.kind == "ObjectId") {
+        return res.status(400).json({ msg: "Profile Not Found" });
+      }
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
 module.exports = router;
