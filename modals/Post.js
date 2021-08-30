@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
   user: {
@@ -20,7 +20,7 @@ const PostSchema = new Schema({
     {
       user: {
         type: Schema.Types.ObjectId, // so that only one like can be done by a user and also we can know which user the like came from
-        refs: "user",
+        ref: "user",
       },
     },
   ],
@@ -28,7 +28,7 @@ const PostSchema = new Schema({
     {
       user: {
         type: Schema.Types.ObjectId,
-        refs: "user",
+        ref: "user",
       },
       text: {
         type: String,
