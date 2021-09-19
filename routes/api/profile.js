@@ -12,7 +12,7 @@ const { check, validationResult } = require("express-validator");
 // @access  Private
 
 router.get("/me", auth, async (req, res) => {
-  try {
+  try { 
     const profile = await Profile.findOne({ user: req.user.id }).populate(
       "user",
       ["name", "avatar"]
@@ -377,8 +377,8 @@ router.put(
     };
     try {
       let profile = await Profile.findOne({ user: req.user.id });
-      // Adding Experience not updating
-      // pushing or inserting into the beginning experience array
+      // Adding Education not updating
+      // pushing or inserting into the beginning education array
       profile.education.unshift(newEdu);
       await profile.save();
       res.json(profile);
